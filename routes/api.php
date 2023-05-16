@@ -18,26 +18,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::get('/sanctum/csrf_token', function (Request $request) {
-//     return $request->session()->token();
-// })->middleware('web');
 
-// Route::group(['middleware' => 'web'], function(){
-//     Route::get('sanctum/csrf_token','App\Http\Controllers\AuthController@token');
-// });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
+});
 
-// Route::post('/logout', 'App\Http\Controllers\AuthController@logout')->middleware('auth:sanctum');
+Route::get('/login', 'App\Http\Controllers\AuthController@index')->name('login');
 
 Route::group(['middleware' => 'api'], function(){
     Route::post('/login', 'App\Http\Controllers\AuthController@login');
     Route::post('/register', 'App\Http\Controllers\AuthController@create');
-    Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
-    Route::get('/csrf_token','App\Http\Controllers\AuthController@token');
     Route::get('/tasks', 'App\Http\Controllers\TasksController@index');
     Route::post('/tasks', 'App\Http\Controllers\TasksController@store');
     Route::get('/tasks/{id}', 'App\Http\Controllers\TasksController@show');
     Route::put('/tasks/{id}', 'App\Http\Controllers\TasksController@update');
     Route::delete('/tasks/{id}', 'App\Http\Controllers\TasksController@destroy');
+    Route::get('/myPage', 'App\Http\Controllers\AuthController@show');
 });
 
 

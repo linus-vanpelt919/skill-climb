@@ -15,6 +15,12 @@ class AuthController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    public function index() {
+        ///auth/loginにリダイレクト
+        return redirect('/auth/login');
+    }
+
     public function create(Request $request)
 {
     $validator = Validator::make($request->all(), [
@@ -46,9 +52,7 @@ class AuthController extends Controller {
         'email' => 'required|email',
         'password' => 'required',
     ]);
-
     $user = User::where('email', $request->email)->first();
-
     if (!$user || !Hash::check($request->password, $user->password)) {
         return response()->json(['error' => 'The provided credentials are incorrect.'], 401);
     }
@@ -58,25 +62,40 @@ class AuthController extends Controller {
     ]);
 }
 
-    public function logout(Request $request) {
-        $user = $request->user();
+public function logout(Request $request) {
+    dd($request);
+    // $user = $request->user();
+    // if ($user) {
+    //     $user->tokens()->delete();
+    //     dd($user->tokens());
+    // }
+    // $request->user()->currentAccessToken()->delete();
 
-        if ($user) {
-            $user->tokens()->delete();
-        }
-        // $request->user()->currentAccessToken()->delete();
+    // return response()->json([
+    //     'message' => 'ログアウトしました',
+    // ]);
+}
 
-        return response()->json([
-            'message' => 'ログアウトしました',
-        ]);
-    }
+public function user(Request $request) {
+    // ユーザー情報取得処理
+}
+// public function token(Request $request) {
+//     return $request->session()->token();
+// }
 
-    public function user(Request $request) {
-        // ユーザー情報取得処理
+//myPage用にユーザー情報を取得する
+public function show(Request $request) {
+    // $user = Auth::user();
+    if (Auth::check()) {
+       dd('ログインしています');
+    }else {
+        dd('ログインしていません');
     }
-    public function token(Request $request) {
-        return $request->session()->token();
-    }
+    $id = Auth::id();
+    $user = $request->user();
+    dd($user);
+    return response()->json($user);
+}
 
 
 }

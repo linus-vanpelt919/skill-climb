@@ -21,6 +21,6 @@
         </style>
     </head>
     <body class="antialiased">
-        <div id="app">aaa</div>
+        <div id="app">aaatest</div>
     </body>
 </html>
