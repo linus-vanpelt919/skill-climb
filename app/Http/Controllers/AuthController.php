@@ -67,14 +67,10 @@ public function login(Request $request)
 }
 
 public function logout(Request $request) {
-    // dd($request);
     $user = $request->user();
     if ($user) {
         $user->tokens()->delete();
-        dd($user->tokens());
     }
-    $request->user()->currentAccessToken()->delete();
-
     return response()->json([
         'message' => 'ログアウトしました',
     ]);
