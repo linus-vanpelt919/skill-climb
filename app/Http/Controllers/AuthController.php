@@ -46,34 +46,38 @@ class AuthController extends Controller {
     return response()->json(['token' => $token], 201);
 }
 
-    public function login(Request $request)
+public function login(Request $request)
 {
     $request->validate([
         'email' => 'required|email',
         'password' => 'required',
     ]);
-    $user = User::where('email', $request->email)->first();
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        return response()->json(['error' => 'The provided credentials are incorrect.'], 401);
+
+    if (Auth::attempt($request->only('email', 'password'))) {
+        $user = Auth::user();
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 200);
     }
 
-    return response()->json([
-        'token' => $user->createToken('web')->plainTextToken,
-    ]);
+    return response()->json(['error' => 'The provided credentials are incorrect.'], 401);
 }
 
 public function logout(Request $request) {
-    dd($request);
-    // $user = $request->user();
-    // if ($user) {
-    //     $user->tokens()->delete();
-    //     dd($user->tokens());
-    // }
-    // $request->user()->currentAccessToken()->delete();
+    // dd($request);
+    $user = $request->user();
+    if ($user) {
+        $user->tokens()->delete();
+        dd($user->tokens());
+    }
+    $request->user()->currentAccessToken()->delete();
 
-    // return response()->json([
-    //     'message' => 'ログアウトしました',
-    // ]);
+    return response()->json([
+        'message' => 'ログアウトしました',
+    ]);
 }
 
 public function user(Request $request) {
@@ -85,16 +89,12 @@ public function user(Request $request) {
 
 //myPage用にユーザー情報を取得する
 public function show(Request $request) {
-    // $user = Auth::user();
     if (Auth::check()) {
-       dd('ログインしています');
-    }else {
-        dd('ログインしていません');
+        $user = Auth::user();
+        return response()->json($user);
+    } else {
+        return response()->json(['message' => 'ログインしていません'], 401);
     }
-    $id = Auth::id();
-    $user = $request->user();
-    dd($user);
-    return response()->json($user);
 }
 
 
