@@ -89,7 +89,8 @@ public function show(Request $request) {
         $user = Auth::user();
         return response()->json($user);
     } else {
-        return response()->json(['message' => 'ログインしていません'], 401);
+
+        return response()->json(['error' => 'The provided credentials are incorrect.'], 401);
     }
 }
 

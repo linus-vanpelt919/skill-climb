@@ -17,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return $request->user() ? response()->json(['isLoggedIn' => true]) : response()->json(['isLoggedIn' => false]);
     });
     Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
     Route::get('/tasks', 'App\Http\Controllers\TasksController@index');
@@ -25,9 +25,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tasks/{id}', 'App\Http\Controllers\TasksController@show');
     Route::put('/tasks/{id}', 'App\Http\Controllers\TasksController@update');
     Route::delete('/tasks/{id}', 'App\Http\Controllers\TasksController@destroy');
-    // Route::get('/myPage', 'App\Http\Controllers\AuthController@show');
+    Route::get('/myPage', 'App\Http\Controllers\AuthController@show');
     Route::get('/show', 'App\Http\Controllers\AuthController@show');
 });
+
 
 Route::group(['middleware' => 'api'], function(){
     Route::get('/login', 'App\Http\Controllers\AuthController@index')->name('login');

@@ -15,8 +15,11 @@ class TasksController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $task = new Task;
-        $task->name = $request->input('name');
+        $task->title = $request->title;
+        $task->description = $request->description;
+        $task->category_id = 4;
         $task->save();
         return response()->json($task);
     }
@@ -29,7 +32,8 @@ class TasksController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $task->name = $request->input('name');
+        $task->title = $request->title;
+        $task->description = $request->description;
         $task->save();
         return response()->json($task);
     }
