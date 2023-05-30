@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user() ? response()->json(['isLoggedIn' => true]) : response()->json(['isLoggedIn' => false]);
     });
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/myPage', [AuthController::class, 'show']);
+    Route::get('/myPage', [UserController::class, 'myPage']);
     Route::get('/show', [AuthController::class, 'show']);
     Route::get('/profile',[TasksController::class, 'show']);
     Route::get('/tasks', [TasksController::class, 'index']);
