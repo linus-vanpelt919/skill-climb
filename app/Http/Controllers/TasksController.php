@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Task;
 
@@ -9,17 +10,25 @@ class TasksController extends Controller
 {
     public function index()
     {
+        // $tasks = Task::with('category')->get();
         $tasks = Task::all();
-        return response()->json($tasks);
+        $categories = Category::all();
+        return response()->json(['tasks' => $tasks, 'categories' => $categories]);
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
+         // 入力検証を追加
+         $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'category_id' => 'required|integer',
+        ]);
+
         $task = new Task;
-        $task->title = $request->title;
-        $task->description = $request->description;
-        $task->category_id = 4;
+        $task->title = $validatedData['title'];
+        $task->description = $validatedData['description'];
+        $task->category_id = $validatedData['category_id'];
         $task->save();
         return response()->json($task);
     }
@@ -32,8 +41,17 @@ class TasksController extends Controller
 
     public function update(Request $request, Task $task)
     {
-        $task->title = $request->title;
-        $task->description = $request->description;
+        // 入力検証を追加
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            // 'category_id' => 'required|integer',
+        ]);
+
+        $task->title = $validatedData['title'];
+        $task->description = $validatedData['description'];
+        // $task->category_id = $validatedData['category_id'];
+        $task->category_id = $task->category_id;
         $task->save();
         return response()->json($task);
     }

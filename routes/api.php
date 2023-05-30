@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\HasApiTokens;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TasksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,19 +22,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user() ? response()->json(['isLoggedIn' => true]) : response()->json(['isLoggedIn' => false]);
     });
-    Route::post('/logout', 'App\Http\Controllers\AuthController@logout');
-    Route::get('/tasks', 'App\Http\Controllers\TasksController@index');
-    Route::post('/tasks', 'App\Http\Controllers\TasksController@store');
-    Route::get('/tasks/{id}', 'App\Http\Controllers\TasksController@show');
-    Route::put('/tasks/{id}', 'App\Http\Controllers\TasksController@update');
-    Route::delete('/tasks/{id}', 'App\Http\Controllers\TasksController@destroy');
-    Route::get('/myPage', 'App\Http\Controllers\AuthController@show');
-    Route::get('/show', 'App\Http\Controllers\AuthController@show');
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/myPage', [AuthController::class, 'show']);
+    Route::get('/show', [AuthController::class, 'show']);
+    Route::get('/profile',[TasksController::class, 'show']);
+    Route::get('/tasks', [TasksController::class, 'index']);
+    Route::post('/tasks', [TasksController::class, 'store']);
+    Route::get('/tasks/{id}',[TasksController::class, 'show']);
+    Route::patch('/tasks/{task}', [TasksController::class, 'update']);
+    Route::delete('/tasks/{id}', [TasksController::class, 'destroy']);
 });
 
 
 Route::group(['middleware' => 'api'], function(){
-    Route::get('/login', 'App\Http\Controllers\AuthController@index')->name('login');
-    Route::post('/login', 'App\Http\Controllers\AuthController@login');
-    Route::post('/register', 'App\Http\Controllers\AuthController@create');
+    Route::get('/login', [AuthController::class, 'index'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'create']);
 });
